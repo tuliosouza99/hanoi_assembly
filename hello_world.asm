@@ -31,7 +31,7 @@ start:
     push 2                      ;torre aux
     push 3                      ;torre destino
     push 1                      ;torre origem
-    push 4                      ;n discos
+    push 3                      ;n discos
     call hanoi
     
     invoke ExitProcess, 0
@@ -57,15 +57,10 @@ hanoi:
     push ebx
     call hanoi
 
-    pop ebx ;n
-    pop esi ;torre origem
-    pop edi ;torre destino
-    pop ecx ;torre aux
-
-    invoke dwtoa, esi, addr v_orig
-    invoke dwtoa, edi, addr v_dest
-     
     ; printf("\nMove o disco %d da torre %c para a torre %c", n, origem, destino)
+
+    invoke dwtoa, [ebp+12], addr v_orig
+    invoke dwtoa, [ebp+16], addr v_dest
     
     invoke GetStdHandle, STD_OUTPUT_HANDLE
     mov var_write, eax
@@ -86,11 +81,6 @@ hanoi:
     invoke GetStdHandle, STD_OUTPUT_HANDLE
     mov var_write, eax
     invoke WriteConsole, var_write, addr quebra_linha, sizeof quebra_linha, addr write_count, NULL
-
-    push ecx ;torre aux
-    push edi ;torre destino
-    push esi ;torre origem
-    push ebx ;n
        
     ; hanoi(n-1, aux, destino, origem)
     mov ebx, [ebp+8]           ;get n
@@ -109,10 +99,10 @@ hanoi:
     
 exception:
 
+    ; printf("\nMove o disco %d da torre %c para a torre %c", n, origem, destino)
+
     invoke dwtoa, esi, addr v_orig
     invoke dwtoa, edi, addr v_dest
-     
-    ; printf("\nMove o disco %d da torre %c para a torre %c", n, origem, destino)
     
     invoke GetStdHandle, STD_OUTPUT_HANDLE
     mov var_write, eax
